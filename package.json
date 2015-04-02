@@ -1,0 +1,59 @@
+{
+  "name": "docpad-plugin-rsync",
+  "version": "2.0.0",
+  "description": "Deploy to remote via `docpad rsync`",
+  "homepage": "http://docpad.org/plugin/rsync",
+  "license": {
+    "type": "MIT"
+  },
+  "badges": {
+    "travis": true,
+    "npm": true,
+    "npmdownloads": true
+  },
+  "keywords": [
+    "docpad",
+    "docpad-plugin",
+    "docpad-deployer",
+    "rsync"
+  ],
+  "author": "2015 Yuri Sementsov <yuri@semencov.com> (https://github.com/semencov)",
+  "maintainers": [
+    "Yuri Sementsov <yuri@semencov.com> (https://github.com/semencov)"
+  ],
+  "contributors": [
+    "Yuri Sementsov <yuri@semencov.com> (https://github.com/semencov)"
+  ],
+  "bugs": {
+    "url": "https://github.com/docpad/docpad-plugin-rsync/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/docpad/docpad-plugin-rsync.git"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "peerDependencies": {
+    "docpad": "6"
+  },
+  "dependencies": {
+    "safeps": "^2.2.11",
+    "rimraf": "^2.2.5",
+    "taskgroup": "^4.2.0",
+    "safefs": "^3.1.0"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.1",
+    "chai": "^2.0.0",
+    "projectz": "^0.5.0",
+    "docpad": "6"
+  },
+  "main": "./out/rsync.plugin.js",
+  "scripts": {
+    "test": "node ./out/rsync.test.js"
+  },
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
+}

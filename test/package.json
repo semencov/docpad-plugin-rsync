@@ -1,0 +1,9 @@
+{
+  "name": "docpad-plugin-rsync-testsite",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "docpad-plugin-eco": "2",
+    "docpad-plugin-marked": "2"
+  }
+}
