@@ -1,7 +1,7 @@
 {
   "name": "docpad-plugin-rsync",
-  "version": "2.0.0",
-  "description": "Deploy to remote via `docpad rsync`",
+  "version": "2.0.1",
+  "description": "Deploy to remote via `docpad deploy-rsync`",
   "homepage": "http://docpad.org/plugin/rsync",
   "license": {
     "type": "MIT"
@@ -23,7 +23,9 @@
   "maintainers": [
     "Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)"
   ],
-  "contributors": [],
+  "contributors": [
+    "Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)"
+  ],
   "bugs": {
     "url": "https://github.com/semencov/docpad-plugin-rsync/issues"
   },

@@ -2,11 +2,11 @@
 
 <!-- BADGES/ -->
 
-[![Build Status](https://img.shields.io/travis/docpad/docpad-plugin-rsync/master.svg)](http://travis-ci.org/docpad/docpad-plugin-rsync "Check this project's build status on TravisCI")
+[![Build Status](https://img.shields.io/travis/semencov/docpad-plugin-rsync/master.svg)](http://travis-ci.org/semencov/docpad-plugin-rsync "Check this project's build status on TravisCI")
 [![NPM version](https://img.shields.io/npm/v/docpad-plugin-rsync.svg)](https://npmjs.org/package/docpad-plugin-rsync "View this project on NPM")
 [![NPM downloads](https://img.shields.io/npm/dm/docpad-plugin-rsync.svg)](https://npmjs.org/package/docpad-plugin-rsync "View this project on NPM")
-[![Dependency Status](https://img.shields.io/david/docpad/docpad-plugin-rsync.svg)](https://david-dm.org/docpad/docpad-plugin-rsync)
-[![Dev Dependency Status](https://img.shields.io/david/dev/docpad/docpad-plugin-rsync.svg)](https://david-dm.org/docpad/docpad-plugin-rsync#info=devDependencies)<br/>
+[![Dependency Status](https://img.shields.io/david/semencov/docpad-plugin-rsync.svg)](https://david-dm.org/semencov/docpad-plugin-rsync)
+[![Dev Dependency Status](https://img.shields.io/david/dev/semencov/docpad-plugin-rsync.svg)](https://david-dm.org/semencov/docpad-plugin-rsync#info=devDependencies)<br/>
 
 
 <!-- /BADGES -->
@@ -65,7 +65,13 @@ plugins:
 
 ## License
 
-Copyright &copy; 2015 [Yuri Sementsov](https://github.com/semencov) and licensed under [MIT License](http://opensource.org/licenses/mit-license.php)
+Unless stated otherwise all works are:
+
+- Copyright &copy; 2015 Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)
+
+and licensed under:
+
+- The incredibly [permissive](http://en.wikipedia.org/wiki/Permissive_free_software_licence) [MIT License](http://opensource.org/licenses/mit-license.php)
 
 <!-- /LICENSE -->
 
