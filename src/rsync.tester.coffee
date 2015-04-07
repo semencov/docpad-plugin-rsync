@@ -7,7 +7,7 @@ module.exports = (testers) ->
 
 		# Custom test
 		testCustom: (next) ->
-			tester = @
-			@suite 'ghpages', (suite,test) ->
+			tester = this
+			@suite 'deploy-rsync', (suite,test) ->
 				test 'deploy', (complete) ->
-					tester.docpad.getPlugin('ghpages').deployToGithubPages(complete)
+					tester.docpad.getPlugin('rsync').deplowWithRsync(complete)

@@ -1,147 +1,154 @@
 # Prepare
 safeps = require('safeps')
-rimraf = require('rimraf')
 pathUtil = require('path')
 safefs = require('safefs')
 {TaskGroup} = require('taskgroup')
 
 # Export
 module.exports = (BasePlugin) ->
-	# Define
-	class RsyncPlugin extends BasePlugin
-		# Name
-		name: 'rsync'
+  # Define
+  class RsyncPlugin extends BasePlugin
+    # Name
+    name: 'rsync'
 
-		# Config
-		config:
-			deployRemote: 'origin'
-			deployBranch: 'gh-pages'
-			environment: 'static'
+    # Config
+    config:
+      dry: false
+      host: null
+      path: null
+      user: null
+      environment: 'static'
+      environments: {}
 
-		# Do the Deploy
-		deplowWithRsync: (next) =>
-			# Prepare
-			docpad = @docpad
-			config = @getConfig()
-			{outPath, rootPath} = docpad.getConfig()
-			opts = {}
+    # Do the Deploy
+    deplowWithRsync: (next) =>
+      # Prepare
+      docpad = @docpad
+      config = @getConfig()
+      {outPath, rootPath, env} = docpad.getConfig()
 
-			# Log
-			docpad.log 'info', 'Deployment to GitHub Pages starting...'
+      opts = config
+      opts.environment = env  if typeof env isnt 'undefined'
+      {host, path, user} = (config.environments[opts.environment] or {})
 
-			# Tasks
-			tasks = new TaskGroup().done(next)
+      opts.host = host  if host?
+      opts.path = path  if path?
+      opts.user = user  if user?
 
-			# Check paths
-			tasks.addTask (complete) ->
-				# Check
-				if outPath is rootPath
-					err = new Error("Your outPath configuration has been customised. Please remove the customisation in order to use the GitHub Pages plugin")
-					return next(err)
+      delete opts['environments']
 
-				# Apply
-				opts.outGitPath = pathUtil.join(outPath, '.git')
+      # Log
+      docpad.log 'info', 'Deployment with rsync starting...'
 
-				# Complete
-				return complete()
+      # Tasks
+      tasks = new TaskGroup().done(next)
 
-			# Check environment
-			tasks.addTask (complete) ->
-				# Check
-				if config.environment not in docpad.getEnvironments()
-					err = new Error("Please run again using: docpad rsync --env #{config.environment}")
-					return next(err)
+      # Check paths
+      tasks.addTask (complete) ->
+        # Check
+        if outPath is rootPath
+          err = new Error("Your outPath configuration has been customised. Please remove the customisation in order to use the GitHub Pages plugin")
+          return next(err)
 
-				# Complete
-				return complete()
+        # Complete
+        return complete()
 
-			# Remove the out git repo if it exists
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Removing old ./out/.git directory..'
-				rimraf(opts.outGitPath, complete)
+      # Check environment
+      tasks.addTask (complete) ->
+        # Check
+        if not opts?.host? or not opts?.path?
+          err = new Error("You haven't setup deploy target for #{env} environment. Add settings to your docpad.coffee.")
+          return next(err)
 
-			# Generate the static environment to out
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Performing static generation...'
-				docpad.action('generate', complete)
+        opts.source = pathUtil.join(outPath, '/')
 
-			# Add a .nojekyll file
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Disabling jekyll...'
-				safefs.writeFile(pathUtil.join(outPath, '.nojekyll'), '', complete)
+        opts.target = ""
+        opts.target += "#{opts.user}@"  if opts.user?
+        opts.target += "#{opts.host}:"
+        opts.target += pathUtil.join(opts.path, '/')
 
-			# Fetch the project's remote url so we can push to it in our new git repo
-			tasks.addTask (complete) ->
-				docpad.log 'debug', "Fetching the URL of the {config.deployRemote} remote..."
-				safeps.spawnCommand 'git', ['config', "remote.#{config.deployRemote}.url"], {cwd:rootPath}, (err,stdout,stderr) ->
-					# Error?
-					return complete(err)  if err
+        # Complete
+        return complete()
 
-					# Extract
-					opts.remoteRepoUrl = stdout.replace(/\n/,"")
+      # Cleaning out
+      tasks.addTask (complete) ->
+        docpad.log 'debug', 'Performing cleaning...'
+        docpad.action('clean', complete)
 
-					# Complete
-					return complete()
+      # Generate the static environment to out
+      tasks.addTask (complete) ->
+        docpad.log 'debug', 'Performing static generation...'
+        docpad.action('generate', complete)
 
-			# Fetch the last log so we can add a meaningful commit message
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Fetching log messages...'
-				safeps.spawnCommand 'git', ['log', '--oneline'], {cwd:rootPath}, (err,stdout,stderr) ->
-					# Error?
-					return complete(err)  if err
+      # Fetch the project's remote url so we can push to it in our new git repo
+      tasks.addTask (complete) ->
+        docpad.log 'debug', "Changing permissions for #{opts.source}..."
+        safeps.spawnCommand 'chmod', ['-R', 'og+Xr', opts.source], {cwd:rootPath}, (err,stdout,stderr) ->
+          # Error?
+          return complete(err)  if err
 
-					# Extract
-					opts.lastCommit = stdout.split('\n')[0]
+          # Complete
+          return complete()
 
-					# Complete
-					return complete()
+      # Fetch the last log so we can add a meaningful commit message
+      tasks.addTask (complete) ->
+        docpad.log 'info', "Deploying #{opts.source} to #{opts.target}..."
 
-			# Initialize a git repo inside the out directory and push it to the deploy branch
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Performing push...'
-				gitCommands = [
-					['init']
-					['add', '--all', '--force']  # make sure we add absoutely everything in the out directory, even files that could be ignored by our global ignore file (like bower_components)
-					['commit', '-m', opts.lastCommit]
-					['push', '--quiet', '--force', opts.remoteRepoUrl, "master:#{config.deployBranch}"]
-				]
-				safeps.spawnCommands 'git', gitCommands, {cwd:outPath, stdio:'inherit'}, (err) ->
-					# Error?
-					return complete(err)  if err
+        dry = if config.dry then "-n" else ""
+        ignore = pathUtil.join(rootPath, '.deployignore')
+        deployignore = if safefs.existsSync(ignore) then "--exclude-from=\"#{ignore}\"" else ""
 
-					# Log
-					docpad.log('info', 'Deployment to GitHub Pages completed successfully')
+        docpad.log 'info', "Running rsync...\n", [
+          'rsync'
+          dry
+          '-rvzph'
+          '--size-only'
+          '--delete'
+          deployignore
+          opts.source
+          opts.target
+        ].join(" ").replace /\s\s*/, ' '
 
-					# Complete
-					return complete()
+        safeps.spawnCommand 'rsync', [
+          dry
+          '-rvzph'
+          '--size-only'
+          '--delete'
+          deployignore
+          opts.source
+          opts.target
+        ], {cwd:outPath}, (err, stdout, stderr) ->
+          # Error?
+          return complete(err)  if err
 
-			# Now that deploy is done, remove the out git repo
-			tasks.addTask (complete) ->
-				docpad.log 'debug', 'Removing new ./out/.git directory..'
-				rimraf(opts.outGitPath, complete)
+          docpad.log 'debug', stdout
+          docpad.log 'info', "Synced.", "\n      " + stdout.split("\n")[-3...-1].join("\n      ")
 
-			# Start the deployment
-			tasks.run()
+          # Complete
+          return complete()
 
-			# Chain
-			@
+      # Start the deployment
+      tasks.run()
+
+      # Chain
+      this
 
 
-		# =============================
-		# Events
+    # =============================
+    # Events
 
-		# Console Setup
-		consoleSetup: (opts) =>
-			# Prepare
-			docpad = @docpad
-			config = @getConfig()
-			{consoleInterface,commander} = opts
+    # Console Setup
+    consoleSetup: (opts) =>
+      # Prepare
+      docpad = @docpad
+      config = @getConfig()
+      {consoleInterface,commander} = opts
 
-			# Deploy command
-			commander
-				.command('rsync')
-				.description("Deploys your #{config.environment} website to the #{config.deployRemote}/#{config.deployBranch} branch")
-				.action consoleInterface.wrapAction(@deplowWithRsync)
+      # Deploy command
+      commander
+        .command('deploy-rsync')
+        .description("deploys your website to the remote target using rsync")
+        .action consoleInterface.wrapAction(@deplowWithRsync)
 
-			# Chain
-			@
+      # Chain
+      this
