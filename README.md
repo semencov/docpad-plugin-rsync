@@ -65,13 +65,7 @@ plugins:
 
 ## License
 
-Unless stated otherwise all works are:
-
-- Copyright &copy; 2015 Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)
-
-and licensed under:
-
-- The incredibly [permissive](http://en.wikipedia.org/wiki/Permissive_free_software_licence) [MIT License](http://opensource.org/licenses/mit-license.php)
+Copyright &copy; 2015 [Yuri Sementsov](https://github.com/semencov) and licensed under [MIT License](http://opensource.org/licenses/mit-license.php)
 
 <!-- /LICENSE -->
 
