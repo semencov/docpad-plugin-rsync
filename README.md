@@ -1,15 +1,10 @@
 # Simple Rsync Deployer Plugin for [DocPad](http://docpad.org)
 
-<!-- BADGES/ -->
-
 [![Build Status](https://img.shields.io/travis/semencov/docpad-plugin-rsync/master.svg)](http://travis-ci.org/semencov/docpad-plugin-rsync "Check this project's build status on TravisCI")
 [![NPM version](https://img.shields.io/npm/v/docpad-plugin-rsync.svg)](https://npmjs.org/package/docpad-plugin-rsync "View this project on NPM")
 [![NPM downloads](https://img.shields.io/npm/dm/docpad-plugin-rsync.svg)](https://npmjs.org/package/docpad-plugin-rsync "View this project on NPM")
 [![Dependency Status](https://img.shields.io/david/semencov/docpad-plugin-rsync.svg)](https://david-dm.org/semencov/docpad-plugin-rsync)
 [![Dev Dependency Status](https://img.shields.io/david/dev/semencov/docpad-plugin-rsync.svg)](https://david-dm.org/semencov/docpad-plugin-rsync#info=devDependencies)<br/>
-
-
-<!-- /BADGES -->
 
 
 Deploy to remotes via `docpad deploy-rsync` using rsync. Inspired by the [GitHub Pages Deployer Plugin for DocPad](http://docpad.org/plugin/ghpages) by [Bevry](https://bevry.me/) and [Docpad rsync Deploy Script](https://gist.github.com/Hypercubed/5804999) by [Jayson Harshbarger](http://hypercubed.com/).
@@ -55,18 +50,14 @@ Also you can add `dryrun: true` in your config to test if all settings are ok.
 
 ``` coffee
 plugins:
-  dryrun: true
   rsync:
+    dryrun: true
     host: 'example.com'
     path: '/var/www/htdocs'
 ```
 
-<!-- LICENSE/ -->
-
 ## License
 
-Copyright &copy; 2015 [Yuri Sementsov](https://github.com/semencov) and licensed under [MIT License](http://opensource.org/licenses/mit-license.php)
-
-<!-- /LICENSE -->
+Copyright &copy; 2015 [Yuri Sementsov](https://github.com/semencov) and licensed under [MIT License](http://opensource.org/licenses/mit-license.php).
 
 
