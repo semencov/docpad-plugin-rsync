@@ -13,12 +13,12 @@ module.exports = (BasePlugin) ->
 
     # Config
     config:
-      dry: false
-      host: null
-      path: null
-      user: null
-      environment: 'static'
-      environments: {}
+      dryrun       : false
+      host         : null
+      path         : null
+      user         : null
+      environment  : 'static'
+      environments : {}
 
     # Do the Deploy
     deplowWithRsync: (next) =>
@@ -27,7 +27,8 @@ module.exports = (BasePlugin) ->
       config = @getConfig()
       {outPath, rootPath, env} = docpad.getConfig()
 
-      opts = config
+      opts = config or {}
+      console.log opts
       opts.environment = env  if typeof env isnt 'undefined'
       {host, path, user} = (config.environments[opts.environment] or {})
 
@@ -35,7 +36,7 @@ module.exports = (BasePlugin) ->
       opts.path = path  if path?
       opts.user = user  if user?
 
-      delete opts['environments']
+      console.log opts
 
       # Log
       docpad.log 'info', 'Deployment with rsync starting...'
@@ -56,7 +57,7 @@ module.exports = (BasePlugin) ->
       # Check environment
       tasks.addTask (complete) ->
         # Check
-        if not opts?.host? or not opts?.path?
+        if not opts.path?
           err = new Error("You haven't setup deploy target for #{env} environment. Add settings to your docpad.coffee.")
           return next(err)
 
@@ -64,7 +65,7 @@ module.exports = (BasePlugin) ->
 
         opts.target = ""
         opts.target += "#{opts.user}@"  if opts.user?
-        opts.target += "#{opts.host}:"
+        opts.target += "#{opts.host}:"  if opts.host?
         opts.target += pathUtil.join(opts.path, '/')
 
         # Complete
@@ -94,23 +95,12 @@ module.exports = (BasePlugin) ->
       tasks.addTask (complete) ->
         docpad.log 'info', "Deploying #{opts.source} to #{opts.target}..."
 
-        dry = if config.dry then "-n" else ""
+        dryrun = if config.dryrun then "-n" else ""
         ignore = pathUtil.join(rootPath, '.deployignore')
         deployignore = if safefs.existsSync(ignore) then "--exclude-from=\"#{ignore}\"" else ""
 
-        docpad.log 'info', "Running rsync...\n", [
-          'rsync'
-          dry
-          '-rvzph'
-          '--size-only'
-          '--delete'
-          deployignore
-          opts.source
-          opts.target
-        ].join(" ").replace /\s\s*/, ' '
-
         safeps.spawnCommand 'rsync', [
-          dry
+          dryrun
           '-rvzph'
           '--size-only'
           '--delete'

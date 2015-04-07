@@ -19,17 +19,17 @@
     "docpad-deployer",
     "rsync"
   ],
-  "author": "2015 Yuri Sementsov <yuri@semencov.com> (https://github.com/semencov)",
+  "author": "2015 Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)",
   "maintainers": [
-    "Yuri Sementsov <yuri@semencov.com> (https://github.com/semencov)"
+    "Yuri Sementsov <hello@semencov.com> (https://github.com/semencov)"
   ],
   "contributors": [],
   "bugs": {
-    "url": "https://github.com/docpad/docpad-plugin-rsync/issues"
+    "url": "https://github.com/semencov/docpad-plugin-rsync/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/docpad/docpad-plugin-rsync.git"
+    "url": "https://github.com/semencov/docpad-plugin-rsync.git"
   },
   "engines": {
     "node": ">=0.8"

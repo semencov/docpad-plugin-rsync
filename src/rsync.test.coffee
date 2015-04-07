@@ -2,7 +2,7 @@
 require('docpad').require('testers')
 	.test(
 			testerName: 'deploy-rsync static environment'
-			pluginPath: __dirname+'/..'
+			pluginPath: __dirname + '/..'
 		,
 			env: 'static'
 			logLevel: 7
