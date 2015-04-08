@@ -28,15 +28,12 @@ module.exports = (BasePlugin) ->
       {outPath, rootPath, env} = docpad.getConfig()
 
       opts = config or {}
-      console.log opts
       opts.environment = env  if typeof env isnt 'undefined'
       {host, path, user} = (config.environments[opts.environment] or {})
 
       opts.host = host  if host?
       opts.path = path  if path?
       opts.user = user  if user?
-
-      console.log opts
 
       # Log
       docpad.log 'info', 'Deployment with rsync starting...'

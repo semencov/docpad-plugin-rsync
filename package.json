@@ -1,6 +1,6 @@
 {
   "name": "docpad-plugin-rsync",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Deploy to remote via `docpad deploy-rsync`",
   "homepage": "http://docpad.org/plugin/rsync",
   "license": {
